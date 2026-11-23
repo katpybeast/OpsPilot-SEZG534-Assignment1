@@ -1,0 +1,38 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python caches and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Pytest caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ruff caches
+.ruff_cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local scratch and temporary files
+*.tmp
+*.temp
+*.log
+local_scratch/
+temp/
+
+# Note: Keep docs/evidence/ versionable for sanitized evaluation records
+# Note: Keep specs/, data/, and reports/ directories for versioned artifacts

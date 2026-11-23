@@ -1,0 +1,118 @@
+{
+  "test_phase": "Phase 3 Smoke Test",
+  "timestamp": "2026-11-23T16:22:11.029749",
+  "authorization": "T060 - Broader Implementation (preliminary live-inference test only)",
+  "test_objectives": [
+    "Verify Ollama local availability",
+    "Confirm qwen2.5:1.5b model is installed",
+    "Execute one genuine model inference",
+    "Validate response against schema",
+    "Record provenance and evidence",
+    "Identify schema compliance issues before full evaluation"
+  ],
+  "test_results": {
+    "ollama_available": true,
+    "model_installed": true,
+    "model_name": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "model_size_bytes": 986061892,
+    "model_parameters": "1.5B",
+    "model_quantization": "Q4_K_M",
+    "inference_executed": true,
+    "inference_time_seconds": 3.21,
+    "raw_response_chars": 828,
+    "raw_response_valid_json": true,
+    "schema_validation": false,
+    "schema_validation_errors": [
+      {
+        "field": "status",
+        "issue": "Invalid enum value",
+        "generated": "Error",
+        "allowed": [
+          "ok",
+          "insufficient_information",
+          "invalid_input",
+          "analysis_error"
+        ],
+        "severity": "CRITICAL"
+      },
+      {
+        "field": "category",
+        "issue": "Invalid category value",
+        "generated": "Compilation and Linking",
+        "allowed": [
+          "BUILD",
+          "DEPENDENCY",
+          "TEST",
+          "CONFIGURATION",
+          "SECURITY",
+          "UNKNOWN"
+        ],
+        "severity": "CRITICAL"
+      },
+      {
+        "field": "confidence",
+        "issue": "Wrong type/range",
+        "generated": 90,
+        "expected_type": "float",
+        "expected_range": "0.0-1.0",
+        "actual_range_used": "0-100",
+        "severity": "CRITICAL"
+      },
+      {
+        "field": "needs_more_information",
+        "issue": "Wrong type",
+        "generated_type": "array",
+        "expected_type": "boolean",
+        "generated": [
+          "Ensure the main function is correctly defined in the source code."
+        ],
+        "severity": "CRITICAL"
+      }
+    ]
+  },
+  "findings": {
+    "general": "Model generates semantically meaningful responses but does not strictly follow the JSON schema contract.",
+    "instruction_compliance": "The prompt instruction to follow the response contract is not being observed by the model.",
+    "implications_for_evaluation": [
+      "All responses will likely fail schema validation gate initially",
+      "Post-processing or response repair logic may be needed",
+      "Rubric scoring requires schema-valid responses; failures will gate the evaluation",
+      "Consider adding schema-aware prompting or response reformatting"
+    ]
+  },
+  "evidence_files_created": [
+    "evidence/live-smoke-test/generated_response.json",
+    "evidence/live-smoke-test/schema_error.json",
+    "evidence/live-smoke-test/smoke_test_evidence.json",
+    "evidence/live-smoke-test/smoke_test_summary.txt",
+    "evidence/live-smoke-test/smoke_test_report.json"
+  ],
+  "next_steps": [
+    "Review model instruction compliance issues",
+    "Consider whether schema-aware prompting improvements are needed",
+    "Decide whether to proceed with full evaluation despite schema failures",
+    "Consult with project owner on acceptable schema compliance for evaluation"
+  ],
+  "inference_details": {
+    "model_endpoint": "http://127.0.0.1:11434",
+    "generation_temperature": 0.7,
+    "generation_context_tokens": 4096,
+    "generation_max_output_tokens": 768,
+    "seed_policy": "omitted (nonzero temperature)"
+  },
+  "test_case_used": {
+    "case_id": "build-normal-001",
+    "category": "BUILD",
+    "coverage": "normal",
+    "input_summary": "Build failed with undefined reference to main at link stage",
+    "expected_status": "ok",
+    "expected_categories": [
+      "BUILD"
+    ],
+    "expected_confidence": [
+      0.85
+    ]
+  },
+  "sanitization": "No sensitive data included; using only synthetic dataset case"
+}

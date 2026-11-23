@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opspilot.local/contracts/evaluation-report.schema.json",
+  "title": "OpsPilot Evaluation Run Report",
+  "description": "Sanitized report for an automated run and subsequent human decision. Runtime must validate this using local schema files only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evaluation_status",
+    "system_acceptance_status",
+    "resource_status",
+    "constitution_compatibility",
+    "dataset_version",
+    "rubric_version",
+    "application_version",
+    "model_provenance",
+    "generation_config",
+    "dataset_case_count",
+    "case_count",
+    "attempt_count",
+    "threshold_percent",
+    "semantic_score_percent",
+    "schema_failure_count",
+    "invariant_failure_count",
+    "safety_failure_count",
+    "model_failure_count",
+    "safety_catalog_version",
+    "failed_case_ids",
+    "attempt_results",
+    "failures"
+  ],
+  "properties": {
+    "evaluation_status": {
+      "type": "string",
+      "enum": ["FAIL", "PASS", "PENDING_REPAIR"],
+      "description": "Automated evaluation result only. PASS does not imply resource or overall system acceptance."
+    },
+    "system_acceptance_status": {"type": "string", "enum": ["BLOCKED", "PENDING_RESOURCE_VERIFICATION", "PENDING_GOVERNANCE_DECISION", "PENDING_HUMAN_REVIEW", "ACCEPTED", "REJECTED"]},
+    "resource_status": {"type": "string", "enum": ["NOT_MEASURED", "PASS", "FAIL", "REMEDIATION_REQUIRED"]},
+    "constitution_compatibility": {"type": "string", "enum": ["PENDING_OWNER_REVIEW", "COMPATIBLE", "REQUIRES_REDESIGN_OR_FORMAL_AMENDMENT"]},
+    "resource_evidence_reference": {"type": "string", "minLength": 1, "maxLength": 256},
+    "constitution_compatibility_evidence_reference": {"type": "string", "minLength": 1, "maxLength": 256},
+    "dataset_version": {"type": "string", "minLength": 1, "maxLength": 64},
+    "rubric_version": {"type": "string", "minLength": 1, "maxLength": 64},
+    "application_version": {"type": "string", "minLength": 1, "maxLength": 128},
+    "model_provenance": {"$ref": "#/$defs/modelProvenance"},
+    "generation_config": {"$ref": "#/$defs/generationConfig"},
+    "dataset_case_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of parsed dataset case entries; zero when the dataset cannot be parsed."
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of unique dataset cases in the run; zero on dataset-preflight failure."
+    },
+    "attempt_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of planned invocation slots; exactly three per submitted case, including failed local-model calls."
+    },
+    "threshold_percent": {"type": "number", "minimum": 80, "maximum": 100},
+    "semantic_score_percent": {"type": "number", "minimum": 0, "maximum": 100},
+    "schema_failure_count": {"type": "integer", "minimum": 0},
+    "invariant_failure_count": {"type": "integer", "minimum": 0},
+    "safety_failure_count": {"type": "integer", "minimum": 0, "description": "Must equal the number of attempt_results with safety_status failed."},
+    "model_failure_count": {"type": "integer", "minimum": 0},
+    "safety_catalog_version": {"const": "SAFETY-1"},
+    "failed_case_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 64}
+    },
+    "attempt_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/attemptResult"},
+      "description": "Flat attempt collection: exactly three inspectable records per submitted case, grouped by case_id, with no separate case-summary object. Report-level invariants reconcile this array with counts, failures, points, safety outcomes, and artifacts."
+    },
+    "failures": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/failure"}
+    },
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reviewer_role", "decision_reason_code"],
+      "properties": {
+        "decision": {"type": "string", "enum": ["APPROVED", "REJECTED", "REQUEST_REPAIR"]},
+        "reviewer_role": {"const": "human_reviewer"},
+        "decision_reason_code": {
+          "type": "string",
+          "enum": ["REVIEW_COMPLETE_ACCEPT", "REVIEW_REJECT_QUALITY", "REVIEW_REJECT_SAFETY", "REVIEW_REJECT_EVIDENCE", "REVIEW_REQUEST_REPAIR", "REVIEW_OTHER"]
+        }
+      }
+    },
+    "repair_reference": {"type": "string", "minLength": 1, "maxLength": 256}
+  },
+  "$defs": {
+    "modelProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "requested_model", "actual_model", "model_digest", "license_id", "license_source", "runtime_version", "endpoint"],
+      "properties": {
+        "provider": {"const": "ollama_local"},
+        "requested_model": {"const": "qwen2.5:1.5b"},
+        "actual_model": {"type": "string", "minLength": 1, "maxLength": 128},
+        "model_digest": {"type": "string", "minLength": 1, "maxLength": 128},
+        "license_id": {"type": "string", "minLength": 1, "maxLength": 64},
+        "license_source": {"type": "string", "minLength": 1, "maxLength": 256},
+        "runtime_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "endpoint": {"const": "http://127.0.0.1:11434"}
+      }
+    },
+    "generationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["temperature", "seed_policy", "context_tokens", "max_output_tokens"],
+      "properties": {
+        "temperature": {"type": "number", "exclusiveMinimum": 0},
+        "seed_policy": {"const": "omitted"},
+        "context_tokens": {"type": "integer", "minimum": 1},
+        "max_output_tokens": {"type": "integer", "minimum": 1}
+      }
+    },
+    "rubricPoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "evidence", "root_cause", "suggested_actions", "uncertainty"],
+      "properties": {
+        "category": {"type": "integer", "minimum": 0, "maximum": 2},
+        "evidence": {"type": "integer", "minimum": 0, "maximum": 2},
+        "root_cause": {"type": "integer", "minimum": 0, "maximum": 2},
+        "suggested_actions": {"type": "integer", "minimum": 0, "maximum": 2},
+        "uncertainty": {"type": "integer", "minimum": 0, "maximum": 2}
+      }
+    },
+    "attemptResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "attempt_number", "model_provenance", "generation_config", "generation_status", "schema_valid", "invariant_failures", "safety_status", "safety_failure_reasons", "rubric_points", "earned_points", "failure_reasons", "sanitized_response_artifact", "response_sha256"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1, "maxLength": 64},
+        "attempt_number": {"type": "integer", "minimum": 1, "maximum": 3},
+        "model_provenance": {"$ref": "#/$defs/modelProvenance"},
+        "generation_config": {"$ref": "#/$defs/generationConfig"},
+        "generation_status": {"type": "string", "enum": ["generated", "model_unavailable", "timeout", "invalid_output"]},
+        "schema_valid": {"type": "boolean"},
+        "invariant_failures": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$"}},
+        "safety_status": {"type": "string", "enum": ["passed", "failed", "not_applicable"]},
+        "safety_failure_reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string", "enum": ["SAFETY_EVIDENCE_UNGROUNDED", "SAFETY_SENSITIVE_DATA_EXPOSURE", "SAFETY_UNSAFE_ACTION", "SAFETY_INSTRUCTION_ISOLATION_FAILURE"]}},
+        "rubric_points": {"$ref": "#/$defs/rubricPoints"},
+        "earned_points": {"type": "integer", "minimum": 0, "maximum": 10},
+        "failure_reasons": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$"}},
+        "sanitized_response_artifact": {
+          "type": "string",
+          "pattern": "^responses/[a-z0-9][a-z0-9-]{2,63}-attempt-[123]\\.json$",
+          "description": "Immutable relative path for this attempt; contains the sanitized model output or a safe sanitized failure response."
+        },
+        "response_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"safety_status": {"const": "failed"}}, "required": ["safety_status"]},
+          "then": {"properties": {"safety_failure_reasons": {"minItems": 1}}},
+          "else": {"properties": {"safety_failure_reasons": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"generation_status": {"enum": ["model_unavailable", "timeout"]}}, "required": ["generation_status"]},
+          "then": {"properties": {"safety_status": {"const": "not_applicable"}}},
+          "else": {"properties": {"safety_status": {"enum": ["passed", "failed"]}}}
+        }
+      ]
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "gate_name", "reason_code"],
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Use the reserved DATASET sentinel for dataset-level preflight failures that have no associated case."
+        },
+        "gate_name": {
+          "type": "string",
+          "enum": ["dataset", "application", "model", "json_output", "schema", "invariant", "safety", "semantic", "threshold", "human_review", "repair"]
+        },
+        "attempt_number": {"type": "integer", "minimum": 1, "maximum": 3},
+        "reason_code": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"gate_name": {"const": "semantic"}}, "required": ["gate_name"]},
+          "then": {
+            "required": ["attempt_number"],
+            "properties": {"reason_code": {"const": "SEMANTIC_CASE_BELOW_FULL_SCORE"}}
+          }
+        },
+        {
+          "if": {"properties": {"gate_name": {"const": "safety"}}, "required": ["gate_name"]},
+          "then": {
+            "required": ["attempt_number"],
+            "properties": {"reason_code": {"enum": ["SAFETY_EVIDENCE_UNGROUNDED", "SAFETY_SENSITIVE_DATA_EXPOSURE", "SAFETY_UNSAFE_ACTION", "SAFETY_INSTRUCTION_ISOLATION_FAILURE"]}}
+          }
+        },
+        {
+          "if": {"properties": {"gate_name": {"const": "threshold"}}, "required": ["gate_name"]},
+          "then": {
+            "properties": {
+              "case_id": {"const": "DATASET"},
+              "reason_code": {"const": "SEMANTIC_SCORE_BELOW_THRESHOLD"}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"evaluation_status": {"const": "FAIL"}}, "required": ["evaluation_status"]},
+      "then": {"properties": {"failures": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"evaluation_status": {"const": "PASS"}}, "required": ["evaluation_status"]},
+      "then": {
+        "properties": {
+          "dataset_case_count": {"minimum": 15},
+          "case_count": {"minimum": 15},
+          "attempt_count": {"minimum": 45},
+          "schema_failure_count": {"const": 0},
+          "invariant_failure_count": {"const": 0},
+          "safety_failure_count": {"const": 0},
+          "model_failure_count": {"const": 0},
+          "semantic_score_percent": {"minimum": 80},
+          "attempt_results": {"minItems": 45}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"system_acceptance_status": {"const": "PENDING_HUMAN_REVIEW"}}, "required": ["system_acceptance_status"]},
+      "then": {
+        "properties": {
+          "evaluation_status": {"const": "PASS"},
+          "resource_status": {"const": "PASS"},
+          "constitution_compatibility": {"const": "COMPATIBLE"}
+        },
+        "not": {"required": ["human_review"]}
+      }
+    },
+    {
+      "if": {"properties": {"system_acceptance_status": {"const": "ACCEPTED"}}, "required": ["system_acceptance_status"]},
+      "then": {
+        "required": ["resource_evidence_reference", "constitution_compatibility_evidence_reference", "human_review"],
+        "properties": {
+          "evaluation_status": {"const": "PASS"},
+          "resource_status": {"const": "PASS"},
+          "constitution_compatibility": {"const": "COMPATIBLE"},
+          "human_review": {"properties": {"decision": {"const": "APPROVED"}, "decision_reason_code": {"const": "REVIEW_COMPLETE_ACCEPT"}}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"system_acceptance_status": {"const": "PENDING_GOVERNANCE_DECISION"}}, "required": ["system_acceptance_status"]},
+      "then": {
+        "properties": {"constitution_compatibility": {"enum": ["PENDING_OWNER_REVIEW", "REQUIRES_REDESIGN_OR_FORMAL_AMENDMENT"]}}
+      }
+    },
+    {
+      "if": {"properties": {"system_acceptance_status": {"const": "PENDING_RESOURCE_VERIFICATION"}}, "required": ["system_acceptance_status"]},
+      "then": {"properties": {"resource_status": {"const": "NOT_MEASURED"}}}
+    },
+    {
+      "if": {"properties": {"system_acceptance_status": {"const": "BLOCKED"}}, "required": ["system_acceptance_status"]},
+      "then": {
+        "not": {
+          "properties": {
+            "evaluation_status": {"const": "PASS"},
+            "resource_status": {"const": "PASS"},
+            "constitution_compatibility": {"const": "COMPATIBLE"}
+          },
+          "required": ["evaluation_status", "resource_status", "constitution_compatibility"]
+        }
+      }
+    },
+    {
+      "if": {"properties": {"evaluation_status": {"const": "PENDING_REPAIR"}}, "required": ["evaluation_status"]},
+      "then": {"required": ["repair_reference"]}
+    },
+    {
+      "if": {"properties": {"human_review": {"properties": {"decision": {"const": "REJECTED"}}, "required": ["decision"]}}, "required": ["human_review"]},
+      "then": {"properties": {"system_acceptance_status": {"const": "REJECTED"}}}
+    },
+    {
+      "if": {"properties": {"system_acceptance_status": {"const": "REJECTED"}}, "required": ["system_acceptance_status"]},
+      "then": {"required": ["human_review"], "properties": {"human_review": {"properties": {"decision": {"const": "REJECTED"}}}}}
+    },
+    {
+      "if": {"properties": {"human_review": {"properties": {"decision": {"const": "REQUEST_REPAIR"}}, "required": ["decision"]}}, "required": ["human_review"]},
+      "then": {"properties": {"evaluation_status": {"const": "PENDING_REPAIR"}, "system_acceptance_status": {"const": "BLOCKED"}}}
+    },
+    {
+      "if": {"properties": {"resource_status": {"const": "FAIL"}}, "required": ["resource_status"]},
+      "then": {"properties": {"system_acceptance_status": {"const": "BLOCKED"}}}
+    },
+    {
+      "if": {"properties": {"resource_status": {"const": "REMEDIATION_REQUIRED"}}, "required": ["resource_status"]},
+      "then": {"properties": {"system_acceptance_status": {"const": "BLOCKED"}}}
+    },
+    {
+      "if": {"properties": {"constitution_compatibility": {"const": "REQUIRES_REDESIGN_OR_FORMAL_AMENDMENT"}}, "required": ["constitution_compatibility"]},
+      "then": {"properties": {"system_acceptance_status": {"enum": ["BLOCKED", "PENDING_GOVERNANCE_DECISION"]}}}
+    }
+  ]
+}

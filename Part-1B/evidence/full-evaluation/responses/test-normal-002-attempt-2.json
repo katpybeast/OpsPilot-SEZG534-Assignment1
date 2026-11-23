@@ -1,0 +1,33 @@
+{
+  "case_id": "test-normal-002",
+  "attempt_number": 2,
+  "response": {
+    "status": "ok",
+    "category": "TEST",
+    "summary": "Test failed: null pointer dereference in module_init()",
+    "root_cause": "Segmentation fault at address 0x0\nStack trace shows dereferencing uninitialized variable 'config'",
+    "evidence": [
+      "Test failed: null pointer dereference in module_init()"
+    ],
+    "suggested_actions": [
+      "Review module initialization code for null pointer dereferences.",
+      "Ensure all variables are properly initialized before use."
+    ],
+    "confidence": 0.95,
+    "needs_more_information": false
+  },
+  "response_sha256": "305d8a02b7f124a2d7f6d2c6e54fd91ae247ce4b0593946b084e323a020a41a1",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:20:22.225345+00:00"
+}

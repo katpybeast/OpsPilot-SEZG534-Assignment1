@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opspilot.local/contracts/explanation-response.schema.json",
+  "title": "OpsPilot Explanation Response",
+  "description": "The exact eight-field application response. Runtime validation must use a pinned, local schema and must not resolve this id over the network.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "category",
+    "summary",
+    "root_cause",
+    "evidence",
+    "suggested_actions",
+    "confidence",
+    "needs_more_information"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["ok", "insufficient_information", "invalid_input", "analysis_error"]
+    },
+    "category": {
+      "type": "string",
+      "enum": ["BUILD", "DEPENDENCY", "TEST", "CONFIGURATION", "SECURITY", "UNKNOWN"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "root_cause": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "suggested_actions": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 240
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "enum": [0, 0.3, 0.5, 0.65, 0.7, 0.85, 0.95],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "needs_more_information": {
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "ok"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "confidence": {"enum": [0.7, 0.85, 0.95]},
+          "evidence": {"minItems": 1},
+          "suggested_actions": {"minItems": 1},
+          "needs_more_information": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "insufficient_information"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "confidence": {"enum": [0.3, 0.5, 0.65]},
+          "suggested_actions": {"minItems": 1},
+          "needs_more_information": {"const": true}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"enum": ["invalid_input", "analysis_error"]}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "category": {"const": "UNKNOWN"},
+          "evidence": {"maxItems": 0},
+          "suggested_actions": {"maxItems": 0},
+          "confidence": {"const": 0},
+          "needs_more_information": {"const": true}
+        }
+      }
+    }
+  ]
+}

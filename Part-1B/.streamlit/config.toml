@@ -1,0 +1,26 @@
+[server]
+# Bind Streamlit to loopback only for local execution per FR-010 and plan requirement
+headless = true
+address = "127.0.0.1"
+port = 8501
+
+[client]
+# Disable usage statistics per plan: "Disable usage-stat collection"
+showErrorDetails = false
+
+[browser]
+# No external resource requirements per plan
+gatherUsageStats = false
+serverAddress = "127.0.0.1"
+
+[logger]
+# No remote logging
+level = "info"
+
+[theme]
+# Local execution only; no external theme assets
+primaryColor = "#0066cc"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"

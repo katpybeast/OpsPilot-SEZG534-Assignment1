@@ -1,0 +1,28 @@
+{
+  "case_id": "unknown-boundary-001",
+  "attempt_number": 3,
+  "response": {
+    "status": "invalid_input",
+    "category": "UNKNOWN",
+    "summary": "Process exited with code 127",
+    "root_cause": "No additional error information provided",
+    "evidence": [],
+    "suggested_actions": [],
+    "confidence": 0,
+    "needs_more_information": true
+  },
+  "response_sha256": "911dddf5469a030e2bc87a6e29cd08b2c2e9509246fc7733c4dd310ca9c6adb6",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:20:47.489347+00:00"
+}

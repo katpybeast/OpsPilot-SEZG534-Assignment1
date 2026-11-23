@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opspilot.local/contracts/evaluation-case.schema.json",
+  "title": "OpsPilot Evaluation Case",
+  "description": "One synthetic, sanitized case. Dataset uniqueness, category quotas, and cross-field checks are enforced separately.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "input",
+    "primary_category",
+    "coverage_tags",
+    "expected_status",
+    "expected_categories",
+    "unknown_partial_credit",
+    "required_evidence_markers",
+    "forbidden_evidence_markers",
+    "required_cause_properties",
+    "forbidden_cause_properties",
+    "required_action_properties",
+    "forbidden_action_properties",
+    "expected_evidence_empty",
+    "expected_actions_empty",
+    "expected_confidence_values",
+    "expected_needs_more_information",
+    "safe_uncertainty_partial_credit",
+    "safety_expectations"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "input": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 262144,
+      "description": "A non-empty, valid accepted submission; UTF-8 byte limit and malformed-control rules are enforced separately. Malformed-log coverage means malformed CI log content, not an invalid application submission."
+    },
+    "primary_category": {
+      "$ref": "#/$defs/category",
+      "description": "Exactly one primary category. Dataset preflight MUST verify that this value appears in expected_categories; JSON Schema cannot compare the value of one property with an array on another property."
+    },
+    "coverage_tags": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["normal", "boundary", "ambiguous", "underspecified", "malformed", "missing_information", "adversarial"]
+      }
+    },
+    "expected_status": {
+      "$ref": "#/$defs/status"
+    },
+    "expected_categories": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/category"},
+      "description": "Acceptable response categories; MUST include primary_category. If primary_category is UNKNOWN, UNKNOWN MUST be included and unknown_partial_credit MUST be false."
+    },
+    "unknown_partial_credit": {"type": "boolean"},
+    "required_evidence_markers": {"$ref": "#/$defs/stringList"},
+    "forbidden_evidence_markers": {"$ref": "#/$defs/stringList"},
+    "required_cause_properties": {
+      "$ref": "#/$defs/stringList",
+      "minItems": 1
+    },
+    "forbidden_cause_properties": {"$ref": "#/$defs/stringList"},
+    "required_action_properties": {"$ref": "#/$defs/stringList"},
+    "forbidden_action_properties": {"$ref": "#/$defs/stringList"},
+    "expected_evidence_empty": {"type": "boolean"},
+    "expected_actions_empty": {"type": "boolean"},
+    "expected_confidence_values": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "number", "enum": [0, 0.3, 0.5, 0.65, 0.7, 0.85, 0.95]}
+    },
+    "expected_needs_more_information": {"type": "boolean"},
+    "safe_uncertainty_partial_credit": {"type": "boolean"},
+    "safety_expectations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["no_execution", "no_sensitive_echo", "instruction_isolation"],
+      "properties": {
+        "no_execution": {"const": true},
+        "no_sensitive_echo": {"const": true},
+        "instruction_isolation": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "category": {
+      "type": "string",
+      "enum": ["BUILD", "DEPENDENCY", "TEST", "CONFIGURATION", "SECURITY", "UNKNOWN"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "insufficient_information"]
+    },
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 240}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"expected_status": {"const": "ok"}}, "required": ["expected_status"]},
+      "then": {
+        "properties": {
+          "expected_confidence_values": {"items": {"type": "number", "enum": [0.7, 0.85, 0.95]}},
+          "expected_needs_more_information": {"const": false},
+          "expected_evidence_empty": {"const": false},
+          "expected_actions_empty": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"expected_status": {"const": "insufficient_information"}}, "required": ["expected_status"]},
+      "then": {
+        "properties": {
+          "expected_confidence_values": {"items": {"type": "number", "enum": [0.3, 0.5, 0.65]}},
+          "expected_needs_more_information": {"const": true},
+          "expected_actions_empty": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"expected_evidence_empty": {"const": true}}, "required": ["expected_evidence_empty"]},
+      "then": {"properties": {"required_evidence_markers": {"maxItems": 0}}},
+      "else": {"properties": {"required_evidence_markers": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"expected_actions_empty": {"const": true}}, "required": ["expected_actions_empty"]},
+      "then": {"properties": {"required_action_properties": {"maxItems": 0}}},
+      "else": {"properties": {"required_action_properties": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"expected_categories": {"contains": {"const": "UNKNOWN"}}}, "required": ["expected_categories"]},
+      "then": {"properties": {"unknown_partial_credit": {"const": false}}}
+    }
+  ]
+}

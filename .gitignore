@@ -1,0 +1,59 @@
+﻿# Python environments and generated files
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local databases and runtime files
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets and environment configuration
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Private submission and temporary Word files
+SEZG534_Assignment1_Reflection.docx
+~$*.docx
+
+# Part-1B root-level diagnostic outputs (local paths / temporary investigation)
+ /Part-1B/*.txt
+/Part-1B/investigate_ollama_schema_support.py
+/Part-1B/step1_inspect_dataset.py
+/Part-1B/step2_smoke_test.py
+/Part-1B/step2b_detailed_test.py
+/Part-1B/step3_live_inference_retry.py
+/Part-1B/step3_smoke_report.py
+/Part-1B/verify_api_format.py
+/Part-1B/verify_phase_2.py
+/Part-1B/PHASE3_SMOKE_TEST_REPORT.md
+
+/Part-1B/*.txt
+
+# Keep Part-1B dependency files in the public repository
+!/Part-1B/requirements.txt
+!/Part-1B/requirements-dev.txt

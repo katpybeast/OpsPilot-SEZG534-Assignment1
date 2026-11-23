@@ -1,0 +1,33 @@
+{
+  "case_id": "dependency-ambiguous-001",
+  "attempt_number": 2,
+  "response": {
+    "status": "ok",
+    "category": "DEPENDENCY",
+    "summary": "Package manager error: conflict detected Something went wrong with resolution May require manual intervention",
+    "root_cause": "Conflict detected in package manager resolution process. Check for package conflicts and manually resolve dependencies if necessary.",
+    "evidence": [
+      "Package conflict detected"
+    ],
+    "suggested_actions": [
+      "Check package versions and dependencies",
+      "Manually resolve conflicts if required"
+    ],
+    "confidence": 0.95,
+    "needs_more_information": false
+  },
+  "response_sha256": "9e0426d73dcceb50dffeae637d91503620d93bece31204c9782da5a27d3db41b",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:21:01.330101+00:00"
+}

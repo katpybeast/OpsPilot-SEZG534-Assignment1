@@ -1,0 +1,28 @@
+PHASE 3 SMOKE TEST RETRY #1 - SUMMARY
+======================================================================
+
+Status: SUCCESS - Single live inference completed with schema enhancement
+Timestamp: 2026-11-23T16:32:03.566655
+Test case: build-normal-001 (BUILD / ['normal'])
+Inference time: 3.12 seconds
+Response validated: YES
+All 8 fields present: YES
+Response hash: 173733d0347d3fe5284535363ce40333396c271d0964d28363ad9fd57147416d
+
+Response preview:
+{
+  "status": "ok",
+  "category": "BUILD",
+  "summary": "Build failed: undefined reference to 'main' at link stage. Compilation succeeded but linking failed.",
+  "root_cause": "undefined reference to 'main' at link stage",
+  "evidence": [
+    "undefined reference to 'main' at link stage",
+    "Linker error: cannot find symbol 'main' in object files"
+  ],
+  "suggested_actions": [
+    "Check the linker script or object files for the symbol 'main'.",
+    "Verify that the 'main' function is included in the object files and that the library paths are correct."
+  ],
+  "confidence": 0.85,
+  "needs_more_information": false
+}

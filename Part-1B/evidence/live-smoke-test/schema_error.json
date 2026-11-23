@@ -1,0 +1,13 @@
+{
+  "message": "'Error' is not one of ['ok', 'insufficient_information', 'invalid_input', 'analysis_error']",
+  "validator": "enum",
+  "path": [
+    "status"
+  ],
+  "schema_path": [
+    "properties",
+    "status",
+    "enum"
+  ],
+  "instance": "Error"
+}

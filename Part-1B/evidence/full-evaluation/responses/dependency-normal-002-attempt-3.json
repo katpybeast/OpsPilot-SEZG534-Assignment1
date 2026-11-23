@@ -1,0 +1,32 @@
+{
+  "case_id": "dependency-normal-002",
+  "attempt_number": 3,
+  "response": {
+    "status": "ok",
+    "category": "UNKNOWN",
+    "summary": "Dependency resolution failed due to missing OpenSSL 1.1 development files.",
+    "root_cause": "unable to locate library libssl.so.1.1",
+    "evidence": [
+      "Runtime library missing: OpenSSL 1.1 development files required"
+    ],
+    "suggested_actions": [
+      "Install OpenSSL 1.1 development files"
+    ],
+    "confidence": 0.85,
+    "needs_more_information": false
+  },
+  "response_sha256": "5078300386ae9e5a0c2f73d19177d49836d2bf63545f481d1ff313213005b458",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:20:14.062641+00:00"
+}

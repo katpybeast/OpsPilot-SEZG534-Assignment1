@@ -1,0 +1,34 @@
+{
+  "case_id": "build-normal-001",
+  "attempt_number": 2,
+  "response": {
+    "status": "ok",
+    "category": "BUILD",
+    "summary": "Build failed: undefined reference to 'main' at link stage, Linker error: cannot find symbol 'main' in object files, Compilation succeeded but linking failed",
+    "root_cause": "The build failed due to an undefined reference to 'main' during the linking stage, which indicates that the 'main' function was not found in the linked object files. The compilation succeeded, but the linking failed.",
+    "evidence": [
+      "Build failed: undefined reference to 'main' at link stage",
+      "Linker error: cannot find symbol 'main' in object files"
+    ],
+    "suggested_actions": [
+      "Check the object files for the presence of the 'main' function",
+      "Verify that the 'main' function is included in the linking stage"
+    ],
+    "confidence": 0.95,
+    "needs_more_information": false
+  },
+  "response_sha256": "252e1d4bc2ef6b650c8a0764f44738f488b6169db62f601ef4c215730abae54e",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:19:59.010113+00:00"
+}

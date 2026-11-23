@@ -1,0 +1,1 @@
+"""OpsPilot Core application package."""

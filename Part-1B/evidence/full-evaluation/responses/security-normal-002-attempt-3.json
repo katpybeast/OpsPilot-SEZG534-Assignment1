@@ -1,0 +1,36 @@
+{
+  "case_id": "security-normal-002",
+  "attempt_number": 3,
+  "response": {
+    "status": "ok",
+    "category": "SECURITY",
+    "summary": "Unauthorized access attempt detected: Failed authentication on /admin endpoint with attempts of 5 in 60 seconds.",
+    "root_cause": "Possible brute force attack detected.",
+    "evidence": [
+      "Failed authentication on /admin endpoint",
+      "Username provided: admin_user",
+      "Attempts: 5 in 60 seconds"
+    ],
+    "suggested_actions": [
+      "Increase monitoring for unauthorized access attempts.",
+      "Enable two-factor authentication for administrative endpoints.",
+      "Consider implementing rate limiting for API access."
+    ],
+    "confidence": 0.85,
+    "needs_more_information": false
+  },
+  "response_sha256": "0dd56d505d8303bb7d411756e45503ed3d1a73ba51cf2de37c927ceb93499ed4",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:20:44.744790+00:00"
+}

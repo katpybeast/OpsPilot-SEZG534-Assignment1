@@ -1,0 +1,33 @@
+{
+  "case_id": "test-normal-001",
+  "attempt_number": 2,
+  "response": {
+    "status": "ok",
+    "category": "TEST",
+    "summary": "Test suite execution aborted due to assertion failure in test_database_connection on test_integration.py line 127.",
+    "root_cause": "AssertionError in test_database_connection: Expected 'connected' but got 'timeout'.",
+    "evidence": [
+      "AssertionError in test_database_connection: Expected 'connected' but got 'timeout'."
+    ],
+    "suggested_actions": [
+      "Review the test suite execution to identify the specific line causing the failure.",
+      "Check the database connection settings and ensure the connection is established correctly."
+    ],
+    "confidence": 0.85,
+    "needs_more_information": false
+  },
+  "response_sha256": "8d6a91670849ff929f542040e0782846a88e0d1cc5b5d69682dfe12ecbbb2c5a",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:20:17.565476+00:00"
+}

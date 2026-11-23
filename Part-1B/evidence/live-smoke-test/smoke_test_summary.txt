@@ -1,0 +1,8 @@
+SMOKE TEST EXECUTION SUMMARY
+============================================================
+
+Test case: build-normal-001
+Timestamp: 2026-11-23T16:21:07.045807
+Model: qwen2.5:1.5b (local Ollama)
+Elapsed time: 9.25s
+Status: failed

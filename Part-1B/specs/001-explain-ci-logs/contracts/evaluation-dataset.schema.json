@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opspilot.local/contracts/evaluation-dataset.schema.json",
+  "title": "OpsPilot Evaluation Dataset",
+  "description": "Versioned collection of synthetic evaluation cases. Uniqueness, per-category minimums, coverage tags, and secret screening are independent dataset invariants.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dataset_version", "cases"],
+  "properties": {
+    "dataset_version": {"type": "string", "minLength": 1, "maxLength": 64},
+    "cases": {
+      "type": "array",
+      "minItems": 15,
+      "items": {"$ref": "evaluation-case.schema.json"}
+    }
+  }
+}

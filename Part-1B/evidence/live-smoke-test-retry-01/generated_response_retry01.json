@@ -1,0 +1,16 @@
+{
+  "status": "ok",
+  "category": "BUILD",
+  "summary": "Build failed: undefined reference to 'main' at link stage. Compilation succeeded but linking failed.",
+  "root_cause": "undefined reference to 'main' at link stage",
+  "evidence": [
+    "undefined reference to 'main' at link stage",
+    "Linker error: cannot find symbol 'main' in object files"
+  ],
+  "suggested_actions": [
+    "Check the linker script or object files for the symbol 'main'.",
+    "Verify that the 'main' function is included in the object files and that the library paths are correct."
+  ],
+  "confidence": 0.85,
+  "needs_more_information": false
+}

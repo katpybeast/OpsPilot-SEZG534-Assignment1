@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-11-23T16:21:07.045807",
+  "test_case_id": "build-normal-001",
+  "test_case_input": "Build failed: undefined reference to 'main' at link stage\nLinker error: cannot find symbol 'main' in object files\nCompilation succeeded but linking failed",
+  "model_inference": {
+    "status": "failed",
+    "elapsed_seconds": 9.253483057022095,
+    "error": "The generated response did not satisfy the response schema."
+  }
+}

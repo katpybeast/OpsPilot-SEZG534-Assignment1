@@ -1,0 +1,34 @@
+{
+  "case_id": "build-normal-002",
+  "attempt_number": 3,
+  "response": {
+    "status": "ok",
+    "category": "BUILD",
+    "summary": "Compilation error at line 42 in src/main.c",
+    "root_cause": "Syntax error: unexpected token ';'",
+    "evidence": [
+      "Compilation error: unexpected token ';'"
+    ],
+    "suggested_actions": [
+      "Check line 42 in src/main.c for syntax errors.",
+      "Review the specific line and fix the error.",
+      "Compile the code again after the fix."
+    ],
+    "confidence": 0.95,
+    "needs_more_information": false
+  },
+  "response_sha256": "14944a6a1a9ca03450c9f2bb542cb60e98353013ef20a20bb2b90d953520d729",
+  "provenance": {
+    "provider": "ollama_local",
+    "requested_model": "qwen2.5:1.5b",
+    "actual_model": "qwen2.5:1.5b",
+    "model_digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+    "runtime_version": "0.40.17",
+    "endpoint": "http://127.0.0.1:11434",
+    "temperature": 0.7,
+    "seed_policy": "omitted",
+    "context_tokens": 4096,
+    "max_output_tokens": 768
+  },
+  "captured_utc": "2026-11-23T11:20:04.803776+00:00"
+}
